@@ -1,0 +1,31 @@
+{
+  "name": "strider-network-worker",
+  "version": "0.0.1",
+  "description": "A worker for strider that delegates jobs over a network",
+  "main": "index.js",
+  "scripts": {
+    "test": "make test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Strider-CD/strider-metwork-worker.git"
+  },
+  "keywords": [
+    "strider",
+    "network",
+    "testing"
+  ],
+  "author": "Jared Forsyth <jared@jaredforsyth.com>",
+  "license": "BSD",
+  "dependencies": {
+    "json-socket": "~0.1.2",
+    "sockemitter": "~0.3.0",
+    "lodash": "~1.3.1"
+  },
+  "devDependencies": {
+    "mockets": "~0.1.0",
+    "chai": "~1.7.2",
+    "jshint": "~2.1.9",
+    "mocha": "~1.12.0"
+  }
+}
