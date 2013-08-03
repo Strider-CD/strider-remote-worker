@@ -101,35 +101,50 @@ Ideas for other triggers:
 
 ## Events
 
-### the drone will fire on the io
+### Events the queen listens for
 
-#### browser
+```
+- queue:new   {job data}
+```
+The queen then decides which drone should handle the request. This is
+the one that's fastest and has open capacity. If all are full, then
+just the one with the shortest queue (relative to its capacity).
 
-When a job event is fired from the remote worker, the drone will fire
-a `browser` event with the arguments `eventtype, [args]`.
+### Events the drone listens for
 
-#### job:info
+```
+- job:query-info  jobid
+```
+This will generally get fired by the `api/jobs` endpoint if there are
+jobs in progress. That way the user will be able to see the full
+output of a running job when they get to the page, not just the output
+since they showed up.
 
-Fired in response to a `job:query-info (reqid, jobid)` event. Args: `reqid,
-jobid, jobinfo`. This will mostly be initiated by a browser who
-receives an update for an unknown job.
+### Events the drone will fire
+
+```
+- browser   eventtype, [args]   // proxying job:* events from the remote
+- job:info  jobid, job-data     // in response to job:query-id
+```
 
 ### Events the drone will fire to the remote
 
-#### drone:query-info
-#### queue:new (data)
+```
+- drone:query-info
+- queue:new         {job data}
+```
   
-### Messages that can be passed to a drone (using SockEmitter)
+### Events the remote fires to the drone
 
 ```
-- drone:info (in response to a drone:query-info)
+- drone:info     {speed: int, capacity: int} // maybe report plugins as well? See thoughts @ bottom
 ```
 
 #### command specific
 
 ```
 - job:cmd:start  id, num, command, screencmd [sanitized version of command]
-- job:cmd:done   id, num, code
+- job:cmd:done   id, num, exitCode
 - job:cmd:stdout id, num, text
 - job:cmd:stderr id, num, text
 ```
@@ -137,7 +152,7 @@ receives an update for an unknown job.
 #### plugin specific
 
 Currently these are only sent up to the browser. They aren't
-propagated by the queen on the main strider server. Do we want this?
+propagated by the drone on the main strider server. Do we want this?
 
 ```
 - job:plugin     id, plugin, [whatever the plugin passes in]
