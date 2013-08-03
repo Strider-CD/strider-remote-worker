@@ -109,8 +109,8 @@ describe('Drone', function () {
     beforeEach(function () {
       drone = new Drone(mocks[1], id, io, {})
       drone.takeJob(job)
-      io.on('error', function (text) {
-        console.error('Failed:', text)
+      io.on('error', function () {
+        console.error.apply(null, ['Failed:'].concat(arguments))
       })
     })
     it('should set the right times', function () {
@@ -132,6 +132,22 @@ describe('Drone', function () {
       expect(drone.jobmap[job.job_id].testCode).to.equal(10)
       remote.emit('job:deployed', job.job_id, 25, 2000)
       expect(drone.jobmap[job.job_id].deployCode).to.equal(25)
+    })
+
+    it('should save io sent before the first command', function () {
+      var jid = job.job_id
+      remote.emit('job:stdout', jid, 'one\n')
+      var cmd = drone.jobs[0].cmds[0]
+      expect(cmd.out).to.equal('one\n')
+    })
+
+    it('should not override messages before the first command', function () {
+      var jid = job.job_id
+      remote.emit('job:stdout', jid, 'one\n')
+      remote.emit('job:cmd:start', jid, 0, 'hi', 'hi')
+      remote.emit('job:cmd:stdout', jid, 0, 'two\n')
+      var cmd = drone.jobs[0].cmds[0]
+      expect(cmd.out).to.equal('one\ntwo\n')
     })
 
     describe('for a command', function () {
