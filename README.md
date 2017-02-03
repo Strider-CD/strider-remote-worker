@@ -1,5 +1,7 @@
 
 # Strider Network Worker
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/Strider-CD/strider-remote-worker.svg)](https://greenkeeper.io/)
 To some extent, this document contains my thoughts about all workers,
 and indeed strider's handling of jobs generally. I'll extract that out
 later.
